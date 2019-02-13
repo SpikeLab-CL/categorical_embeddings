@@ -29,7 +29,7 @@ data.head()
 3  Grass  Poison    625      False
 4   Fire      NA    309      False
 
-emb = Embedder(target_type="regression")
+emb = embedder.Embedder(target_type="regression")
 data = emb.fit_transform(data, y="Total")
 data.head().T
 
