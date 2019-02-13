@@ -89,14 +89,3 @@ class Embedder(BaseModel):
             pbar.update(1)
         pbar.close()
         return data
-
-if __name__ == "__main__":
-    import pandas as pd
-    data = pd.read_csv("/Users/maravenag/Desktop/categorical_embedding/Pokemon.csv")
-    data.fillna("NA",inplace=True)
-    data = data[['Type_1', 'Type_2', 'Total', 'Legendary']]
-    print(data.head())
-    e = Embedder(target_type="regression")
-    #components = e.fit(data['Type_1'], data['Total'])
-    c = e.fit_transform(data, y="Total")
-    print(c.head().T)
