@@ -4,6 +4,7 @@ import numpy as np
 import warnings
 warnings.filterwarnings("ignore")
 from tqdm import tqdm
+import pandas as pd
 
 class Embedder(BaseModel):
     def __init__(self, target_type=None):
