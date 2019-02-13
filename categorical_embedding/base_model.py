@@ -2,6 +2,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Embedding, Flatten
 
 class BaseModel():
+    model = None
     def __init__(self, target_type=None):
         assert target_type in ['regression',
                                'binary_classification',
@@ -27,3 +28,6 @@ class BaseModel():
             model.add(Dense(num_classes, activation="softmax"))
             model.compile(loss='categorical_crossentropy', optimizer='adam')
         return model
+    
+    def fit_model(self, X, y):
+        self.model.fit(x=X, y=y, epochs=30, verbose=1)

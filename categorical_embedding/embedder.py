@@ -7,7 +7,6 @@ if(debug):
     import pandas as pd
 
 class Embedder(BaseModel):
-    model = None
     def __init__(self, target_type=None):
         BaseModel.__init__(self, target_type=target_type)
     
@@ -25,7 +24,8 @@ class Embedder(BaseModel):
                 if  (y.dtypes != "int64" and y.dtypes != "float64"):
                     raise RuntimeError("For target_type='regression' target must be <int64> or <float64>")
                 else:
-                    return y
+                    scaler = MinMaxScaler()
+                    return scaler.fit_transform(y.values.reshape(-1, 1))
             elif target_type == "binary_classification":
                 assert y.nunique() == 2, "For target_type='binary_classification' target must have only 2 classes"
                 if (y.dtypes == "bool" or y.dtypes == "object"):
@@ -44,6 +44,18 @@ class Embedder(BaseModel):
     def _get_model_params(self, X):
             return np.unique(X).shape[0], min(np.ceil((np.unique(X).shape[0])/2),50)
 
+    def _get_components(self, embedding_size, feature_name):
+        col_names = [ feature_name+"_{0}".format(x) for x in range(1,int(embedding_size)+1)]
+        embedding_layer = self.model.get_layer(name="embedding_layer")
+        embedding_layer = pd.DataFrame(embedding_layer.get_weights()[0])
+        embedding_layer.columns = col_names
+        return embedding_layer
+
+    def _parse_components_index(self, components, categorical_names):
+        indexs = pd.Series(categorical_names).to_frame()
+        indexs.columns = ["feature"]
+        return pd.merge(components,indexs, how="left", left_index=True, right_index=True)
+
     def fit(self,X, y):
         """
         X: pandas.core.series.Series: Series with the data
@@ -51,15 +63,21 @@ class Embedder(BaseModel):
         return pd.DataFrame() with encodings values
         """
         data = X.copy(deep=True)
+        var_name = data.name.replace(" ","_")
         target = y.copy(deep=True)
         data, encoder = self._prepare_feature(data)
         y = self._prepare_target(y=y,target_type=self.target_type)
         n_classes, embedding_size = self._get_model_params(data)
+        categorical_names = list(encoder.inverse_transform([x for x in range(0,n_classes)]))
         self.model = self.build_model(num_classes=n_classes, vector_size=int(embedding_size))
-        self.model.fit(x=data, y=y, epochs=30)
+        self.fit_model(X=data, y=y)
+        components = self._get_components(embedding_size, var_name)
+        components = self._parse_components_index(components, categorical_names)
+        return components
 
 if __name__ == "__main__":
     data = pd.read_csv("/Users/maravenag/Desktop/categorical_embedding/Pokemon.csv")
     data.fillna("NaN",inplace=True)
-    e = Embedder(target_type="regression")
-    e.fit(data['Type 1'], data['Total'])
+    e = Embedder(target_type="binary_classification")
+    components = e.fit(data['Type 1'], data['Legendary'])
+    print(components)
