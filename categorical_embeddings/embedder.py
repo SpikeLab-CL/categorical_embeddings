@@ -1,4 +1,4 @@
-from categorical_embedding.base_model import BaseModel
+from categorical_embeddings.base_model import BaseModel
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler,OneHotEncoder
 import numpy as np
 import warnings

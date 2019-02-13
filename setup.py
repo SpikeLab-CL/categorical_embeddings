@@ -9,7 +9,7 @@ REQUIRED_PACKAGES = ["scikit-learn>=0.20.1",
                       "tqdm"]
 
 setup(
-  name='categorical_embedding',
+  name='categorical_embeddings',
   version='0.1',
   author = 'Matias Aravena',
   author_email = 'matias@spikelab.xyz',
