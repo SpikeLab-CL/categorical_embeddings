@@ -39,7 +39,10 @@ class Embedder(BaseModel):
             return y
 
     def _get_model_params(self, X):
-            return np.unique(X).shape[0], min(np.ceil((np.unique(X).shape[0])/2),50)
+            embedding_size = min(np.ceil((np.unique(X).shape[0])/2),50)
+            if embedding_size == 1:
+                embedding_size = 2 # min 2 dims
+            return np.unique(X).shape[0], embedding_size
 
     def _get_components(self, embedding_size, feature_name):
         col_names = [ feature_name+"_{0}".format(x) for x in range(1,int(embedding_size)+1)]
