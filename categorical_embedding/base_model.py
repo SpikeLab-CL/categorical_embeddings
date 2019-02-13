@@ -1,5 +1,6 @@
 from keras.models import Sequential
 from keras.layers import Dense, Embedding, Flatten
+from keras.callbacks import EarlyStopping
 
 class BaseModel():
     model = None
@@ -30,4 +31,5 @@ class BaseModel():
         return model
     
     def fit_model(self, X, y):
-        self.model.fit(x=X, y=y, epochs=30, verbose=1)
+        stopping = EarlyStopping(monitor='loss', patience=15)
+        self.model.fit(x=X, y=y, epochs=100, verbose=0, callbacks=[stopping])
