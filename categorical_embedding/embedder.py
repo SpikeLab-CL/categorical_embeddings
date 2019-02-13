@@ -53,10 +53,12 @@ class Embedder(BaseModel):
         return pd.merge(components,indexs, how="left", left_index=True, right_index=True)
 
     def fit(self,X, y):
-        """
-        X: pandas.core.series.Series: Series with the data
-        y: pandas.core.series.Series: Series with target variable
-        return pd.DataFrame() with encodings values
+        """Group by the dataframe by index
+            Arguments:
+                X: pandas.core.series.Serie: Series with the data
+                y: pandas.core.series.Series Series with target variable
+            Returns:
+                pandas.DataFrame: Dataframe with embeddings components
         """
         data = X.copy(deep=True)
         feature_name = data.name.replace(" ","_")
@@ -65,17 +67,19 @@ class Embedder(BaseModel):
         y = self._prepare_target(y=y,target_type=self.target_type)
         n_classes, embedding_size = self._get_model_params(data)
         categorical_names = list(encoder.inverse_transform([x for x in range(0,n_classes)]))
-        self.model = self.build_model(num_classes=n_classes, vector_size=int(embedding_size))
-        self.fit_model(X=data, y=y)
+        self.model = self._build_model(num_classes=n_classes, vector_size=int(embedding_size))
+        self._fit_model(X=data, y=y)
         components = self._get_components(embedding_size, feature_name)
         components = self._parse_components_index(components, categorical_names, feature_name)
         return components
     
     def fit_transform(self, X, y, exclude_columns=[]):
-        """
-        X: pandas.DataFrame(): Series with the data
-        y: <string> target variable
-        return pd.DataFrame() with encodings values
+        """Group by the dataframe by index
+            Arguments:
+                X: pandas.DataFrame() Features DataFrame
+                y: <string> Target column name
+            Returns:
+                pandas.DataFrame: Original Dataframe with embeddings components as columns
         """
         data = X.copy(deep=True)
         selected_cols = data.select_dtypes(['object'])

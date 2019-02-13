@@ -10,7 +10,7 @@ class BaseModel():
                                'multiclass'],"target_type must be 'regression' or 'binary_classification' or 'multiclass'"
         self.target_type = target_type
 
-    def build_model(self, num_classes=2, vector_size=2):
+    def _build_model(self, num_classes=2, vector_size=2):
         model = Sequential()
         model.add(Embedding(input_dim=num_classes,
                             output_dim=vector_size,
@@ -30,6 +30,6 @@ class BaseModel():
             model.compile(loss='categorical_crossentropy', optimizer='adam')
         return model
     
-    def fit_model(self, X, y):
+    def _fit_model(self, X, y):
         stopping = EarlyStopping(monitor='loss', patience=15)
         self.model.fit(x=X, y=y, epochs=100, verbose=0, callbacks=[stopping])
