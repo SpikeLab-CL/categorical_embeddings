@@ -31,6 +31,10 @@ data.head()
 
 emb = embedder.Embedder(target_type="regression")
 data = emb.fit_transform(data, y="Total")
+
+#you can exclude columns from the embedding
+#data = emb.fit_transform(data, y="Total",exclude_columns=['col_to_exlude])
+
 data.head().T
 
                      0            1            2            3           4
