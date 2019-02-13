@@ -1,4 +1,4 @@
-### Categorical Embeddings
+## Categorical Embeddings
 **IMPORTANT:** Still under construction
 
 This packages allows to create embeddings from categorical variables using Keras,
@@ -6,6 +6,11 @@ you must specify `target_type` which must be one of these:
 1. `regression`
 2. `binary_classification`
 3. `multiclass`
+
+### Instalation
+Run `python setup.py install`
+
+### Usage
 
 Basic usage example:
 ```
