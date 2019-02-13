@@ -15,7 +15,7 @@ Run `python setup.py install`
 Basic usage example:
 ```
 import pandas as pd
-from categorical_embedding import embedder
+from categorical_embeddings import embedder
 
 data = pd.read_csv("Pokemon.csv")
 data.fillna("NA", inplace=True)
