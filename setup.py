@@ -6,6 +6,7 @@ REQUIRED_PACKAGES = ["scikit-learn>=0.20.1",
                       "numpy>=1.15.4",
                       "keras==2.1.6",
                       "tensorflow==1.8.0",
+                      "matplotlib>=3.0.2",
                       "tqdm"]
 
 setup(
