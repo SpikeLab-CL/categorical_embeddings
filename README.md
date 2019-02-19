@@ -22,6 +22,10 @@ data.fillna("NA", inplace=True)
 data = data[['Type_1', 'Type_2', 'Total', 'Legendary']]
 data.head()
 
+col_names = list(data.columns)
+col_names = list(map(lambda name: name.replace(" ","_"), col_names))
+data.columns = col_names
+
    Type_1  Type_2  Total  Legendary
 0  Grass  Poison    318      False
 1  Grass  Poison    405      False

@@ -96,4 +96,5 @@ class Embedder(BaseModel):
             data = pd.merge(data, component, how="left")
             pbar.update(1)
         pbar.close()
+        data.drop(labels=items, axis=1, inplace=True)
         return data
