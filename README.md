@@ -1,11 +1,7 @@
 ## Categorical Embeddings
 **IMPORTANT:** Still under construction
 
-This packages allows to create embeddings from categorical variables using Keras,
-you must specify `target_type` which must be one of these: 
-1. `regression`
-2. `binary_classification`
-3. `multiclass`
+This packages allows to create embeddings from categorical variables using Keras
 
 ### Instalation
 Run `python setup.py install`
@@ -20,27 +16,40 @@ from categorical_embeddings import embedder
 data = pd.read_csv("Pokemon.csv")
 data.fillna("NA", inplace=True)
 data = data[['Type_1', 'Type_2', 'Total', 'Legendary']]
-data.head()
-
 col_names = list(data.columns)
 col_names = list(map(lambda name: name.replace(" ","_"), col_names))
 data.columns = col_names
+data.head()
+```
+The data looks like:
 
-   Type_1  Type_2  Total  Legendary
+```   Type_1  Type_2  Total  Legendary
 0  Grass  Poison    318      False
 1  Grass  Poison    405      False
 2  Grass  Poison    525      False
 3  Grass  Poison    625      False
 4   Fire      NA    309      False
+```
 
+Define an `Embedder`, specify `target_type` which must be one of these: 
+1. `regression`
+2. `binary_classification`
+3. `multiclass`
+
+*Optional arguments*:
+`max_iterations`: Number of iterations to train the embedding model.
+`tolerance`: Embeddings early stopping value
+
+```
 emb = embedder.Embedder(target_type="regression")
 data = emb.fit_transform(data, y="Total")
-
 #you can exclude columns from the embedding
 #data = emb.fit_transform(data, y="Total",exclude_columns=['col_to_exlude])
+```
 
-data.head().T
+We get the original `DataFrame` with the embedding transformed features:
 
+```
                      0            1            2            3           4
 Type_1           Grass        Grass        Grass        Grass        Fire
 Type_2          Poison       Poison       Poison       Poison          NA
@@ -66,7 +75,10 @@ Type_2_8     0.0102438    0.0102438    0.0102438    0.0102438  -0.0244231
 Type_2_9   -0.00574593  -0.00574593  -0.00574593  -0.00574593  -0.0559954
 Type_2_10   -0.0390857   -0.0390857   -0.0390857   -0.0390857  -0.0102417
 
-#if you want only the components
+```
+
+If you want to get only the embeddings components for a given feature:
+```
 embeddings_values = emb.fit(data['Type_1'], y=data["Total"])
 embeddings_values.head()
 
@@ -77,4 +89,12 @@ embeddings_values.head()
 3 -0.024248  0.083361  0.047766  0.008144  0.021174 -0.041157  0.004702 -0.071176 -0.040287  Electric
 4 -0.053012 -0.017219  0.028762  0.058204 -0.024770  0.019870 -0.027558  0.008474 -0.040889     Fairy
 ```
+Then you can plot the embeddings using: 
+`plot_embeddings(components=embeddings_values, dims="2d")`:
+Where `components` are the embeddings values, and `dims` must be `"2d"` or `"3d"`
 
+```
+from categorical_embeddings.utils.plots import plot_embeddings
+plot_embeddings(components=embeddings_values, dims="2d")
+```
+<img src="img/plot.png" width="600">
