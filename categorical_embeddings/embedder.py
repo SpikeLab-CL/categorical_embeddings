@@ -7,8 +7,8 @@ from tqdm import tqdm
 import pandas as pd
 
 class Embedder(BaseModel):
-    def __init__(self, target_type=None):
-        BaseModel.__init__(self, target_type=target_type)
+    def __init__(self, target_type=None, max_iterations=100, tolerance=15):
+        BaseModel.__init__(self, target_type=target_type, max_iterations=100, tolerance=tolerance)
     
     def _prepare_feature(self, X):
         if X.dtypes == "object":

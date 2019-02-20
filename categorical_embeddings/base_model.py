@@ -4,11 +4,13 @@ from keras.callbacks import EarlyStopping
 
 class BaseModel():
     model = None
-    def __init__(self, target_type=None):
+    def __init__(self, target_type=None, max_iterations=100, tolerance=15):
         assert target_type in ['regression',
                                'binary_classification',
                                'multiclass'],"target_type must be 'regression' or 'binary_classification' or 'multiclass'"
         self.target_type = target_type
+        self.max_iterations = max_iterations
+        self.tolerance = tolerance
 
     def _build_model(self, num_classes=2, vector_size=2):
         model = Sequential()
@@ -31,5 +33,5 @@ class BaseModel():
         return model
     
     def _fit_model(self, X, y):
-        stopping = EarlyStopping(monitor='loss', patience=15)
-        self.model.fit(x=X, y=y, epochs=100, verbose=0, callbacks=[stopping])
+        stopping = EarlyStopping(monitor='loss', patience=self.tolerance)
+        self.model.fit(x=X, y=y, epochs=self.max_iterations, verbose=0, callbacks=[stopping])
