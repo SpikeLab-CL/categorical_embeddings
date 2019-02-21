@@ -4,13 +4,14 @@ from keras.callbacks import EarlyStopping
 
 class BaseModel():
     model = None
-    def __init__(self, target_type=None, max_iterations=100, tolerance=15):
+    def __init__(self, target_type=None, max_iterations=100, tolerance=15, use_hiddens=True):
         assert target_type in ['regression',
                                'binary_classification',
                                'multiclass'],"target_type must be 'regression' or 'binary_classification' or 'multiclass'"
         self.target_type = target_type
         self.max_iterations = max_iterations
         self.tolerance = tolerance
+        self.use_hiddens=use_hiddens
 
     def _build_model(self, num_classes=2, vector_size=2):
         model = Sequential()
@@ -19,8 +20,9 @@ class BaseModel():
                             input_length=1,
                             name="embedding_layer"))
         model.add(Flatten())
-        model.add(Dense(int(1.5*num_classes), activation="relu"))
-        model.add(Dense(int(0.5*num_classes), activation="relu"))
+        if self.use_hiddens:
+            model.add(Dense(int(1.5*num_classes), activation="relu"))
+            model.add(Dense(int(0.5*num_classes), activation="relu"))
         if self.target_type == "regression":
             model.add(Dense(1, activation="linear"))
             model.compile(loss='mse', optimizer='adam')
