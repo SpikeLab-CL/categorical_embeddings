@@ -7,11 +7,13 @@ from tqdm import tqdm
 import pandas as pd
 
 class Embedder(BaseModel):
-    def __init__(self, target_type=None, max_iterations=100, tolerance=15, use_hiddens=True):
+    def __init__(self, target_type=None, max_iterations=100, tolerance=15, use_hiddens=True, verbose=0, fixed_emb_size=None):
         BaseModel.__init__(self, target_type=target_type, 
                            max_iterations=100, 
                            tolerance=tolerance, 
-                           use_hiddens=use_hiddens)
+                           use_hiddens=use_hiddens,
+                           verbose=verbose)
+        self.fixed_emb_size = fixed_emb_size
     
     def _prepare_feature(self, X):
         if X.dtypes == "object":
@@ -74,6 +76,8 @@ class Embedder(BaseModel):
         y = self._prepare_target(y=y,target_type=self.target_type)
         n_classes, embedding_size = self._get_model_params(data)
         categorical_names = list(encoder.inverse_transform([x for x in range(0,n_classes)]))
+        if (self.fixed_emb_size != None and isinstance(self.fixed_emb_size,int)):
+            embedding_size = self.fixed_emb_size
         self.model = self._build_model(num_classes=n_classes, vector_size=int(embedding_size))
         self._fit_model(X=data, y=y)
         components = self._get_components(embedding_size, feature_name)
