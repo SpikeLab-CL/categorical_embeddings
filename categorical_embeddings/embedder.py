@@ -9,7 +9,7 @@ import pandas as pd
 class Embedder(BaseModel):
     def __init__(self, target_type=None, max_iterations=100, tolerance=15, use_hiddens=True, verbose=0, fixed_emb_size=None):
         BaseModel.__init__(self, target_type=target_type, 
-                           max_iterations=100, 
+                           max_iterations=max_iterations,
                            tolerance=tolerance, 
                            use_hiddens=use_hiddens,
                            verbose=verbose)
