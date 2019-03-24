@@ -84,7 +84,7 @@ class Embedder(BaseModel):
         components = self._parse_components_index(components, categorical_names, feature_name)
         return components
     
-    def fit_transform(self, X, y, exclude_columns=[]):
+    def fit_transform(self, X, y, exclude_columns=[], drop_originals=True):
         """Group by the dataframe by index
             Arguments:
                 X: pandas.DataFrame() Features DataFrame
@@ -95,7 +95,7 @@ class Embedder(BaseModel):
         data = X.copy(deep=True)
         selected_cols = data.select_dtypes(['object'])
         y = data[y]
-        items = [x for x in selected_cols.columns if x not in exclude_columns]
+        items = [x for x in selected_cols.columns if x not in exclude_columns+[y]]
         selected_cols = selected_cols.filter(items=items)
         pbar = tqdm(total=len(items))
         for column in selected_cols:
@@ -104,5 +104,6 @@ class Embedder(BaseModel):
             data = pd.merge(data, component, how="left")
             pbar.update(1)
         pbar.close()
-        data.drop(labels=items, axis=1, inplace=True)
+        if drop_originals:
+            data.drop(labels=items, axis=1, inplace=True)
         return data
