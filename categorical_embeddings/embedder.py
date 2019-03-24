@@ -100,6 +100,7 @@ class Embedder(BaseModel):
         pbar = tqdm(total=len(items))
         for column in selected_cols:
             component = self.fit(selected_cols[column], y=y)
+            component[column] = component[column].astype(object)
             data = pd.merge(data, component, how="left")
             pbar.update(1)
         pbar.close()
